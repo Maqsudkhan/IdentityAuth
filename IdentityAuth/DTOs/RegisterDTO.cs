@@ -7,5 +7,6 @@
         public required string Password { get; set; }
         public string Status { get; set; }
         public int Age { get; set; }
+        public IList<string> Roles { get; set; }
     }
 }

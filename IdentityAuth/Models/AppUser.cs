@@ -8,7 +8,7 @@ namespace IdentityAuth.Models
         public string Status { get; set; }
         public int Age { get; set; }
 
-        public DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.Now;
+        public DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.UtcNow;
         public DateTimeOffset ModifiedDate { get; set; }
         public DateTimeOffset DeletedDate { get; set; }
         public bool isDeleted { get; set; } = false;
