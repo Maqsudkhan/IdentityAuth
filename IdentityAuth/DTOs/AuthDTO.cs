@@ -4,7 +4,7 @@
     {
         public string? Token { get; set; }
         public string? Message { get; set; }
-        public string StatusCode { get; set; }
+        public int StatusCode { get; set; }
         public bool isSuccess { get; set; }
     }
 }
