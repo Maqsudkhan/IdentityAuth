@@ -23,6 +23,15 @@ namespace IdentityAuth.Services
 
         public async Task<AuthDTO> GenerateToken(AppUser user)
         {
+            if (user == null)
+            {
+                return new AuthDTO()
+                {
+                    Message = "User is null",
+                    StatusCode = 404
+                };
+            }
+
             var tokenHandler = new JwtSecurityTokenHandler();
             //var key = Encoding.ASCII.GetBytes(_configuration.GetSection("JWTSettings").GetSection("SecurityKey").Value!);
             var key = Encoding.ASCII.GetBytes(_configuration["JWTSettings:SecurityKey"]!);

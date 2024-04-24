@@ -1,5 +1,6 @@
 ﻿using IdentityAuth.DTOs;
 using IdentityAuth.Models;
+using IdentityAuth.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +15,13 @@ namespace IdentityAuth.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IAuthService _authService;
 
-        public UsersController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager)
+        public UsersController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IAuthService authService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _authService = authService;
         }
 
         [HttpPost]
@@ -53,7 +56,7 @@ namespace IdentityAuth.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<string>> Login(LoginDTO loginDTO)
+        public async Task<ActionResult<AuthDTO>> Login(LoginDTO loginDTO)
         {
             var user = await _userManager.FindByEmailAsync(loginDTO.Email);
             
@@ -66,6 +69,9 @@ namespace IdentityAuth.Controllers
             {
                 return Unauthorized("Password invalid❗");
             }
+
+            var token = await _authService.GenerateToken(user);
+
             return Ok("Xush kelibsiz✅");
         }
 
