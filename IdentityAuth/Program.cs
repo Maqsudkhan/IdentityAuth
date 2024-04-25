@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 
@@ -67,7 +68,33 @@ namespace IdentityAuth
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+
+            builder.Services.AddSwaggerGen(options =>       //Swaggerni nastroyka qilish. Swaggerda Authorization qilish uchun quluf iconcasini chiqarish uchun
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Authentication Sample", Version = "v1.0.0", Description = "Authentication Sample Simple" });
+
+                var securityShceme = new OpenApiSecurityScheme
+                {
+                    Description = "Greeting Methodini ishlatish uchun Avtorizatsiya qilishingiz kerak",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                };
+
+                options.AddSecurityDefinition("Bearer", securityShceme);
+                var securityRequirement = new OpenApiSecurityRequirement
+                {
+                    {securityShceme,new[] {"Bearer"} }
+                };
+                options.AddSecurityRequirement(securityRequirement);
+            });
+
 
 
             var app = builder.Build();
@@ -92,6 +119,17 @@ namespace IdentityAuth
             app.MapControllers();
 
             app.Run();
+
+
+
+
+
+
+
+
+
+
+
         }
     }
 }
