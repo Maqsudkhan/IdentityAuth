@@ -62,5 +62,19 @@ namespace IdentityAuth.Controllers
             return Ok(result);
         }
 
+        [HttpPut]
+        public async Task<IActionResult> UpdateRoleById(string Id, string rolName)
+        {
+            var role = await _roleManager.FindByIdAsync(Id);
+            role!.Name = rolName;
+            var reslut = await _roleManager.UpdateAsync(role);
+            if (!reslut.Succeeded)
+            {
+                return Ok("Error occured❗");
+            }
+            return Ok($"successfully updated role to '{rolName}'");
+
+        }
+
     }
 }
