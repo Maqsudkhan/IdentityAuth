@@ -1,6 +1,7 @@
 ﻿using IdentityAuth.DTOs;
 using IdentityAuth.Models;
 using IdentityAuth.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ namespace IdentityAuth.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    //[Authorize]
     public class UsersController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
@@ -25,6 +27,7 @@ namespace IdentityAuth.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Register(RegisterDTO registerDto)
         {
             if (!ModelState.IsValid)
@@ -56,6 +59,7 @@ namespace IdentityAuth.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ActionResult<AuthDTO>> Login(LoginDTO loginDTO)
         {
             var user = await _userManager.FindByEmailAsync(loginDTO.Email);
@@ -72,12 +76,12 @@ namespace IdentityAuth.Controllers
 
             var token = await _authService.GenerateToken(user);
 
-            return Ok("Xush kelibsiz✅");
+            return Ok(token);
         }
 
 
-
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllUser() 
         {
 
@@ -85,6 +89,15 @@ namespace IdentityAuth.Controllers
                 
             return Ok(result);
 
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Student")]
+        public async Task<ActionResult<string>> GetAllUsers1()
+        {
+            var result = await _userManager.Users.ToListAsync();
+
+            return Ok("Student keldi");
         }
 
     }

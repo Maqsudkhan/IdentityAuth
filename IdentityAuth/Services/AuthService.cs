@@ -10,14 +10,14 @@ namespace IdentityAuth.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly IConfiguration _configuration;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IConfiguration _configuration;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AuthService(IConfiguration configuration, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public AuthService(UserManager<IdentityUser> userManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager)
         {
-            _configuration = configuration;
             _userManager = userManager;
+            _configuration = configuration;
             _roleManager = roleManager;
         }
 
@@ -33,8 +33,9 @@ namespace IdentityAuth.Services
             }
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            //var key = Encoding.ASCII.GetBytes(_configuration.GetSection("JWTSettings").GetSection("SecurityKey").Value!);
-            var key = Encoding.ASCII.GetBytes(_configuration["JWTSettings:SecurityKey"]!);
+            var key = Encoding.ASCII.GetBytes(_configuration.GetSection("JWTSettings").GetSection("SecretKey").Value!);
+            //var key = Encoding.ASCII.GetBytes(_configuration["JWTSettings:SecretKey"]!);
+
 
             var roles = await _userManager.GetRolesAsync(user);
 

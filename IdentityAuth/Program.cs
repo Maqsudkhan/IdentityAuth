@@ -1,7 +1,9 @@
 
 using IdentityAuth.Models;
+using IdentityAuth.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace IdentityAuth
 {
@@ -17,15 +19,22 @@ namespace IdentityAuth
                 options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            builder.Services.AddScoped<IAuthService, AuthService>(); 
+
+
             builder.Services.AddIdentity<AppUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationIdentityDbContext>()
                 .AddDefaultTokenProviders();
-               
+
+            
+
+
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
 
             var app = builder.Build();
 
@@ -40,7 +49,7 @@ namespace IdentityAuth
 
             app.UseAuthentication();
             app.UseAuthorization();
-
+             
 
             app.MapControllers();
 
