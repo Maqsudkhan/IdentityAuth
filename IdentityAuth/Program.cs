@@ -1,8 +1,11 @@
 
 using IdentityAuth.Models;
 using IdentityAuth.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 
 namespace IdentityAuth
@@ -26,8 +29,39 @@ namespace IdentityAuth
                 .AddEntityFrameworkStores<ApplicationIdentityDbContext>()
                 .AddDefaultTokenProviders();
 
-            
 
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = builder.Configuration["JWTSettings:ValidIssuer"],
+                    ValidAudience = builder.Configuration["JWTSettings:ValidAudience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTSettings:SecretKey"]!))
+                };
+            });
+
+
+            /*
+            builder.Services.AddDbContext<IdentityDbContext>(options => options.UseInMemoryDatabase("IdentityDb"));
+            builder.Services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme);
+            builder.Services.AddAuthorizationBuilder();
+
+            
+            builder.Services.AddIdentityCore<IdentityUser>()
+                .AddEntityFrameworkStores<IdentityDbContext>()
+                .AddApiEndpoints();
+            */
 
 
             builder.Services.AddControllers();
@@ -44,6 +78,10 @@ namespace IdentityAuth
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            //app.MapIdentityApi<IdentityUser>();
+            //app.MapGet("welcome", () => "Salom bolajonim")
+            //.RequireAuthorization();
 
             app.UseHttpsRedirection();
 
