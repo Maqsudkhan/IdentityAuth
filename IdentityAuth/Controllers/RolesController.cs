@@ -49,5 +49,18 @@ namespace IdentityAuth.Controllers
             return Ok(roles);
         }
 
+        [HttpDelete]
+        public async Task<ActionResult> DeleteRoleById(string Id)
+        {
+            var role = await _roleManager.FindByIdAsync(Id);
+           
+            var result = await _roleManager.DeleteAsync(role!);
+            if (!result.Succeeded) 
+            {
+                return Ok("Error occured❗");
+            }
+            return Ok(result);
+        }
+
     }
 }
