@@ -12,7 +12,6 @@ namespace IdentityAuth.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
@@ -85,7 +84,7 @@ namespace IdentityAuth.Controllers
         public async Task<IActionResult> GetAllUser() 
         {
 
-            var result = await _userManager.Users.ToListAsync();
+            List<AppUser>? result = await _userManager.Users.ToListAsync();
                 
             return Ok(result);
 
@@ -102,3 +101,4 @@ namespace IdentityAuth.Controllers
 
     }
 }
+ 

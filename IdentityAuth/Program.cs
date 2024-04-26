@@ -118,7 +118,6 @@ namespace IdentityAuth
                 options.AllowAnyOrigin();
             });
 
-            app.UseHttpsRedirection();
 
             app.UseAuthentication();
             app.UseAuthorization();
